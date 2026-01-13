@@ -31,6 +31,7 @@
     "@huggingface/transformers": "3.8.1",
     "@opensouls/core": "workspace:*",
     "@opensouls/engine": "workspace:*",
+    "@opensouls/soul": "workspace:*",
     "@opentelemetry/sdk-node": "^0.51.0",
     "@prisma/client": "^7.1.0",
     "@reactivedata/reactive": "^0.2.2",

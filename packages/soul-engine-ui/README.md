@@ -2,6 +2,22 @@
 
 The interface for the Soul Engine chat debugger.
 
+## Public chat page
+
+The `/chat` route renders a user-facing chat UI without requiring login. It
+expects either environment variables or URL params, and uses the Render backend
+`/auth/token` endpoint for JWTs:
+
+```
+NEXT_PUBLIC_SOUL_ENGINE_ORGANIZATION="organization slug"
+NEXT_PUBLIC_SOUL_ENGINE_BLUEPRINT="subroutine id"
+NEXT_PUBLIC_SOUL_ENGINE_CHAT_ID="optional session id"
+NEXT_PUBLIC_SOUL_ENGINE_WS_URL="wss://your-render-host"
+NEXT_PUBLIC_SOUL_ENGINE_HTTP_URL="https://your-render-host"
+```
+
+You can also override with query params: `?organization=...&subroutine=...&chatId=...`.
+
 ## Hosted demos
 
 Demos are hosted under https://souls.chat/s/demo-id using a reverse proxy to the actual demo. The demo code is usually store in the community repository.

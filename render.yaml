@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: soul-engine-cloud
+    runtime: node
+    plan: standard
+    rootDir: .
+    buildCommand: |
+      curl -fsSL https://bun.sh/install | bash
+      export BUN_INSTALL="$HOME/.bun"
+      export PATH="$BUN_INSTALL/bin:$PATH"
+      bun install
+      cd packages/soul-engine-cloud
+      bun run prisma:generate
+    startCommand: |
+      export BUN_INSTALL="$HOME/.bun"
+      export PATH="$BUN_INSTALL/bin:$PATH"
+      cd packages/soul-engine-cloud
+      bun run ./scripts/run-server.ts ../../souls
+    envVars:
+      - key: SOUL_ENGINE_JWT_PRIVATE_KEY
+        sync: false
+      - key: SOUL_ENGINE_JWT_ISSUER
+        sync: false
+      - key: SOUL_ENGINE_ORGANIZATION
+        sync: false
+      - key: SOUL_ENGINE_BLUEPRINT
+        sync: false
+      - key: CODE_PATH
+        value: ../../souls
