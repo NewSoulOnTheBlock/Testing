@@ -10,7 +10,7 @@ type GoogleChunk = EnhancedGenerateContentResponse;
 type LLMChunk = OpenAIChunk | AnthropicChunk | GoogleChunk;
 
 type StreamResult = {
-  textStream: ReadableStream<string>;
+  textStream: AsyncIterable<string>;
   fullContent: Promise<string>;
   usage: Promise<{ input: number; output: number }>;
 };
@@ -88,7 +88,7 @@ export function createLLMStreamReader(stream: AsyncIterable<LLMChunk>): StreamRe
     rejectUsage = reject;
   });
 
-  const textStream = new ReadableStream<string>({
+  const readableStream = new ReadableStream<string>({
     async start(controller) {
       try {
         for await (const chunk of stream) {
@@ -114,8 +114,25 @@ export function createLLMStreamReader(stream: AsyncIterable<LLMChunk>): StreamRe
     }
   });
 
+  const readableStreamToAsyncIterable = async function* (source: ReadableStream<string>) {
+    const reader = source.getReader();
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) {
+          return;
+        }
+        if (value !== undefined) {
+          yield value;
+        }
+      }
+    } finally {
+      reader.releaseLock();
+    }
+  };
+
   return {
-    textStream,
+    textStream: readableStreamToAsyncIterable(readableStream),
     fullContent: fullContentPromise,
     usage: usagePromise,
   };
