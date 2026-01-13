@@ -81,41 +81,24 @@ export const Editor = ({ blueprints, params, souls, contexts }: {
         windows: [],
     });
 
-    useEffect(() => {
-        souls.forEach((soul) => {
-            addBlueprint(soul.blueprint, soul.soulId);
-        });
-        contexts.forEach((context) => {
-            addSharedContext(context.organization, context.blueprint, context.soulId);
-        });
-    }, [souls, contexts]);
+    const organizationSlug = params.organizationSlug as string;
 
-    const selectBlueprint = useCallback((blueprint: string) => {
-        setPanel({ ...panel, blueprint: blueprint });
-    }, [panel]);
-
-    function closeWindow(index: number) {
-        setWindows(windows.filter((_, i) => i !== index));
-    }
-
-    function addBlueprint(blueprint: string, soulId: string) {
-
+    const addBlueprint = useCallback((blueprint: string, soulId: string) => {
         setWindows((prevWindows) => {
-            if (prevWindows.some((window) => window.editorType === "blueprint" && window.uniqueId === makeIdentifier({ blueprint, soulId, organization: params.organizationSlug as string }))) {
+            if (prevWindows.some((window) => window.editorType === "blueprint" && window.uniqueId === makeIdentifier({ blueprint, soulId, organization: organizationSlug }))) {
                 return prevWindows;
             }
             return [...prevWindows, {
                 ...BlueprintWindow,
-                organization: params.organizationSlug as string,
-                uniqueId: makeIdentifier({ blueprint, soulId, organization: params.organizationSlug as string }),
+                organization: organizationSlug,
+                uniqueId: makeIdentifier({ blueprint, soulId, organization: organizationSlug }),
                 blueprint,
                 soulId,
             } as BlueprintProps]
         });
-    }
+    }, [organizationSlug, setWindows]);
 
-    async function addSharedContext(organization: string, blueprint: string, soulId: string, uniqueId?: string) {
-
+    const addSharedContext = useCallback(async (organization: string, blueprint: string, soulId: string, uniqueId?: string) => {
         try {
             const sharedContextName = makeIdentifier({ blueprint, soulId, organization }, uniqueId);
             setWindows((prevWindows) => {
@@ -124,16 +107,32 @@ export const Editor = ({ blueprints, params, souls, contexts }: {
                 }
                 return [...prevWindows, {
                     ...SharedContextWindow,
-                    organization: params.organizationSlug as string,
+                    organization: organizationSlug,
                     uniqueId: sharedContextName,
                     blueprint,
                     soulId,
                 } as SharedContextProps]
             });
-
         } catch (error) {
             console.error("Error creating shared context token", error);
         }
+    }, [organizationSlug, setWindows]);
+
+    useEffect(() => {
+        souls.forEach((soul) => {
+            addBlueprint(soul.blueprint, soul.soulId);
+        });
+        contexts.forEach((context) => {
+            addSharedContext(context.organization, context.blueprint, context.soulId);
+        });
+    }, [addBlueprint, addSharedContext, contexts, souls]);
+
+    const selectBlueprint = useCallback((blueprint: string) => {
+        setPanel((prev) => ({ ...prev, blueprint }));
+    }, [setPanel]);
+
+    function closeWindow(index: number) {
+        setWindows(windows.filter((_, i) => i !== index));
     }
 
     const sharedContextTokens = useMemo(() =>
@@ -397,21 +396,19 @@ function TextFieldVariable({ state, expanded, onChange }: { state: string, expan
     const textFieldRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-
-        if (isLongText === isTextArea) return;
-
         setIsTextArea((prev) => {
-            if (isLongText !== isTextArea) {
-                if (isLongText) {
-                    textAreaRef.current?.focus();
-                    textAreaRef.current?.setSelectionRange(value.length, value.length);
-                } else {
-                    textFieldRef.current?.focus();
-                    const input = textFieldRef.current?.querySelector('input');
-                    input?.setSelectionRange(value.length, value.length);
-                }
+            if (isLongText === prev) {
+                return prev;
             }
-            return isLongText
+            if (isLongText) {
+                textAreaRef.current?.focus();
+                textAreaRef.current?.setSelectionRange(value.length, value.length);
+            } else {
+                textFieldRef.current?.focus();
+                const input = textFieldRef.current?.querySelector('input');
+                input?.setSelectionRange(value.length, value.length);
+            }
+            return isLongText;
         });
     }, [isLongText, value]);
 

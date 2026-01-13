@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState, useMemo } from "react";
+import Image from "next/image";
 import DebugChat from "@/components/DebugChat";
 import { Theme, Box, Grid, Select, TextField, Badge, Button, Text, ScrollArea } from "@radix-ui/themes";
 import { Cross1Icon, PlusIcon, WidthIcon } from "@radix-ui/react-icons";
@@ -44,15 +45,24 @@ export const Home = ({ params }: {
                     <VerticalSidebar text="Home" />
                 </Box>
                 <div className="absolute inset-0 bg-black opacity-100">
-                    <img
+                    <Image
                         className={`hidden w-full h-full object-cover transition-opacity duration-1000`}
                         src={randomBackgroundImage}
                         alt="background"
+                        fill
+                        sizes="100vw"
+                        priority
                     />
                 </div>
                 <Box className="relative px-24 py-24 w-full h-full flex flex-col justify-between">
                     <div className="absolute bottom-24 right-24 lg:top-24 lg:right-24">
-                        <img className="w-12 h-12 lg:w-24 lg:h-24" src="/logo_mark.svg" alt="logo" />
+                        <Image
+                            className="w-12 h-12 lg:w-24 lg:h-24"
+                            src="/logo_mark.svg"
+                            alt="logo"
+                            width={96}
+                            height={96}
+                        />
                     </div>
                     <div className="flex flex-col gap-2 mb-12 max-w-[48em]">
                         <h1 className="text-[4em] leading-[.8em] lg:text-[8em] lg:leading-[.8em] font-bold select-none whitespace-pre-line overflow-hidden">

@@ -131,6 +131,14 @@ export type EphemeralEvent = {
   _timestamp: number
 }
 
+const isEphemeralEvent = (event: SoulEvent | EphemeralEvent): event is EphemeralEvent => {
+  return typeof (event as EphemeralEvent).type === "string" && "data" in event
+}
+
+const isSoulEvent = (event: SoulEvent | EphemeralEvent): event is SoulEvent => {
+  return typeof (event as SoulEvent)._id === "string" && "_kind" in event
+}
+
 // Check if the code is running in a browser environment
 const isBrowser = typeof window !== 'undefined';
 
@@ -453,7 +461,7 @@ export class Soul extends EventEmitter<SoulEvents> {
     return `${host}/chats/${this.organizationSlug}/${this.blueprint}/${this.soulId}`
   }
 
-  private eventFromPayload(payload: string): { event: SoulEvent, eventType: string } {
+  private eventFromPayload(payload: string): { event: SoulEvent | EphemeralEvent, eventType: string } {
     if (!this.connection) {
       throw new Error("You must call start() before handling messages")
     }
@@ -561,7 +569,10 @@ export class Soul extends EventEmitter<SoulEvents> {
     const { eventType, event: statelessEvent } = this.eventFromPayload(payload)
 
     if (eventType === Events.ephemeralEvent) {
-      const ephemeralEvent = statelessEvent as EphemeralEvent
+      if (!isEphemeralEvent(statelessEvent)) {
+        throw new Error("invalid ephemeral event payload")
+      }
+      const ephemeralEvent = statelessEvent
       this.emit("ephemeral", ephemeralEvent)
       // allow fine-grained listeners per ephemeral subtype
       this.emit(`ephemeral:${ephemeralEvent.type}`, ephemeralEvent)
@@ -570,6 +581,10 @@ export class Soul extends EventEmitter<SoulEvents> {
 
     if (eventType !== Events.newSoulEvent) {
       return // for now we only care about soul events
+    }
+
+    if (!isSoulEvent(statelessEvent)) {
+      throw new Error("invalid soul event payload")
     }
 
     // first we will emit a SoulEvent so that the dev has full access to all the information
