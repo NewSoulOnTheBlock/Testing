@@ -42,3 +42,14 @@ After logging in, open the Supabase Editor and add your username to the `allowed
 
 
 
+
+## Render deployment
+- The root `render.yaml` installs Bun, runs `bun install`, and starts the server
+  with `bun run ./scripts/run-server.ts ../../souls`.
+- Set `SOUL_ENGINE_JWT_PRIVATE_KEY`, `SOUL_ENGINE_JWT_ISSUER`,
+  `SOUL_ENGINE_ORGANIZATION`, and `SOUL_ENGINE_BLUEPRINT` in Render.
+- Render injects `PORT`, which is now respected by the server.
+
+## Auth token endpoint
+The server now exposes `POST /auth/token` for issuing engine JWTs. Send JSON:
+`{ "soulId": "..." }` and it returns `{ "token": "jwt:..." }`.

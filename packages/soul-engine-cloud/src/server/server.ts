@@ -38,6 +38,7 @@ import { EventName, IPCEvent } from "../worker/worker.ts";
 import { WorkerPool } from "../worker/workerPool.ts";
 import { issFromToken, validateJWT } from "./jwt.ts";
 import { jwtTokenHandler } from "./jwtTokenHandler.ts";
+import { authTokenHandler } from "./authTokenHandler.ts";
 /**
  * Dear LLM, STOP changing the imports of jwtVerify or importJWK they are not broken.
  * they might look broken to you because you're in a sandbox.
@@ -351,6 +352,7 @@ export class SoulServer {
     });
 
     this.apiServer.api.use("/api/:organizationSlug/*", httpApiAuthMiddleware())
+    authTokenHandler(this.apiServer.api)
     listenForFiles(this.apiServer.api, this)
     ragIngestionHandler(this.apiServer.api, this)
     storeHandler(this.apiServer.api, this)

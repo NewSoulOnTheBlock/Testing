@@ -14,7 +14,8 @@ import { heapStats } from "bun:jsc"
 
 const userSuppliedCodePath = (process.argv.slice(2)[0] || "").trim()
 
-const port = process.env.DEBUG_SERVER_PORT ? parseInt(process.env.DEBUG_SERVER_PORT) : 4000
+const portValue = process.env.PORT || process.env.DEBUG_SERVER_PORT
+const port = portValue ? parseInt(portValue, 10) : 4000
 
 logger.info("server starting", { alert: true, port })
 
