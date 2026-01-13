@@ -5,8 +5,16 @@ import { EventName, IPCEvent } from './worker.ts';
 type WaitingResolver = (worker: WorkerController) => void;
 
 export class WorkerPool {
-  private static readonly MAX_POOL_SIZE = 5;
-  private static readonly MIN_POOL_SIZE = 2;
+  private static readonly DEFAULT_MAX_POOL_SIZE = 5;
+  private static readonly DEFAULT_MIN_POOL_SIZE = 2;
+
+  private static maxPoolSize(): number {
+    return parseInt(process.env.WORKER_POOL_MAX ?? WorkerPool.DEFAULT_MAX_POOL_SIZE.toString(10), 10);
+  }
+
+  private static minPoolSize(): number {
+    return parseInt(process.env.WORKER_POOL_MIN ?? WorkerPool.DEFAULT_MIN_POOL_SIZE.toString(10), 10);
+  }
 
   private available = new Map<string, WorkerController>();
   private inUse = new Map<string, WorkerController>();
@@ -23,7 +31,7 @@ export class WorkerPool {
       return;
     }
     logger.info("launching worker pool, will connect on port", { port: this.port });
-    for (let i = 0; i < WorkerPool.MIN_POOL_SIZE; i++) {
+    for (let i = 0; i < WorkerPool.minPoolSize(); i++) {
       this.spawnAndStore().catch((error) => {
         logger.error("error pre-spawning worker", { error });
       });
@@ -40,7 +48,7 @@ export class WorkerPool {
       return existing;
     }
 
-    if (this.totalWorkers() < WorkerPool.MAX_POOL_SIZE) {
+    if (this.totalWorkers() < WorkerPool.maxPoolSize()) {
       const worker = await this.spawnAndStore();
       this.inUse.set(worker.workerId!, worker);
       return worker;
@@ -214,7 +222,7 @@ export class WorkerPool {
     if (this.draining) {
       return;
     }
-    if (this.totalWorkers() >= WorkerPool.MAX_POOL_SIZE) {
+    if (this.totalWorkers() >= WorkerPool.maxPoolSize()) {
       return;
     }
     this.spawnAndStore().catch((error) => {
