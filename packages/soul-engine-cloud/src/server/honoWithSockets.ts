@@ -174,6 +174,7 @@ export class HonoWithSockets {
     })
 
     this.server = Bun.serve({
+      hostname: "0.0.0.0",
       port,
       ...handlers,
     })
