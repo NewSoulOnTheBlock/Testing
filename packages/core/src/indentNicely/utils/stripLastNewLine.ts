@@ -1,4 +1,4 @@
-import toString from './toString.ts';
+import toString from "./toString";
 
 export default function stripLastNewLine(value: any): string {
   const stringValue: string = toString(value);

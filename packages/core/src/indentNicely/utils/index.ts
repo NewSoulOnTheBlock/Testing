@@ -1,6 +1,6 @@
-import flat from './flat.ts';
-import prefixLines from './prefixLines.ts';
-import stripLastNewLine from './stripLastNewLine.ts';
-import toString from './toString.ts';
+import flat from "./flat";
+import prefixLines from "./prefixLines";
+import stripLastNewLine from "./stripLastNewLine";
+import toString from "./toString";
 
 export { flat, prefixLines, stripLastNewLine, toString };

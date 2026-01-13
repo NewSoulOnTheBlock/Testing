@@ -1,7 +1,7 @@
 import { ZodSchema } from "zod"
-import { WorkingMemory } from "../WorkingMemory.ts"
-import { ChatMessageContent, ChatMessageRoleEnum, ContentText } from "../Memory.ts"
-import { SupportedModel } from "../sharedTypes/supportedModels.ts"
+import { WorkingMemory } from "../WorkingMemory"
+import { ChatMessageContent, ChatMessageRoleEnum, ContentText } from "../Memory"
+import { SupportedModel } from "../sharedTypes/supportedModels"
 
 export interface UsageNumbers {
   model: SupportedModel,

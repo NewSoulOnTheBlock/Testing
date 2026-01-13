@@ -1,6 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { trace, context } from "@opentelemetry/api";
-import { registerProcessor } from "./registry.ts";
+import { registerProcessor } from "./registry";
 import { 
   ChatMessageContent, 
   ChatMessageRoleEnum, 
@@ -8,7 +8,7 @@ import {
   Content,
   AnthropicImage,
   ContentTypeGuards
-} from "../Memory.ts";
+} from "../Memory";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 
 import {
@@ -17,10 +17,10 @@ import {
   prepareMemoryForJSON,
   ProcessOpts,
   ProcessResponse
-} from "./Processor.ts";
+} from "./Processor";
 import { backOff } from "exponential-backoff";
-import { fixMessageRoles } from './messageRoleFixer.ts';
-import { createLLMStreamReader } from '../utils/llmStreamReader.ts';
+import { fixMessageRoles } from "./messageRoleFixer";
+import { createLLMStreamReader } from "../utils/llmStreamReader";
 
 const tracer = trace.getTracer(
   'open-souls-AnthropicProcessor',

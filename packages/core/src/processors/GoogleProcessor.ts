@@ -7,7 +7,7 @@ import {
   StartChatParams,
 } from "@google/generative-ai";
 import { trace, context } from "@opentelemetry/api";
-import { ChatMessageContent, Memory, GoogleImage, ContentTypeGuards, ChatMessageRoleEnum } from "../Memory.ts";
+import { ChatMessageContent, Memory, GoogleImage, ContentTypeGuards, ChatMessageRoleEnum } from "../Memory";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 import { RequestOptions } from "openai/core";
 import {
@@ -17,11 +17,11 @@ import {
   UsageNumbers,
   ProcessOpts,
   ProcessResponse
-} from "./Processor.ts";
+} from "./Processor";
 import { backOff } from "exponential-backoff";
-import { registerProcessor } from "./registry.ts";
-import { createLLMStreamReader } from '../utils/llmStreamReader.ts';
-import { fixMessageRoles } from "./messageRoleFixer.ts";
+import { registerProcessor } from "./registry";
+import { createLLMStreamReader } from "../utils/llmStreamReader";
+import { fixMessageRoles } from "./messageRoleFixer";
 import { nanoid } from 'nanoid';
 
 const tracer = trace.getTracer(

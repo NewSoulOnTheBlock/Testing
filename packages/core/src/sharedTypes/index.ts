@@ -1,2 +1,2 @@
-export * from "./eventLog.ts"
-export * from "./supportedModels.ts"
+export * from "./eventLog"
+export * from "./supportedModels"

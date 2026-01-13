@@ -1,4 +1,4 @@
-import toString from './toString.ts';
+import toString from "./toString";
 
 export default function prefixLines(prefix: string, value: any, skipFirst: boolean = false): string {
   return toString(value)

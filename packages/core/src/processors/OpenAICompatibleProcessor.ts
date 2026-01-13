@@ -4,8 +4,8 @@ import { trace, context } from "@opentelemetry/api";
 import { backOff } from "exponential-backoff";
 import { ZodError, fromZodError } from 'zod-validation-error';
 import { zodToJsonSchema } from "zod-to-json-schema";
-import { registerProcessor } from "./registry.ts";
-import { ChatMessageRoleEnum, ContentText, Memory } from "../Memory.ts";
+import { registerProcessor } from "./registry";
+import { ChatMessageRoleEnum, ContentText, Memory } from "../Memory";
 import { ChatCompletionCreateParamsStreaming, ChatCompletionMessageParam } from "openai/resources/chat/completions";
 import {
   extractJSON,
@@ -13,14 +13,14 @@ import {
   prepareMemoryForJSON,
   ProcessOpts,
   ProcessResponse
-} from "./Processor.ts";
-import { fixMessageRoles } from "./messageRoleFixer.ts";
-import { indentNicely } from "../utils.ts";
-import { createLLMStreamReader } from '../utils/llmStreamReader.ts';
-import { UsageError } from '../utils/llmStreamReader.ts';
+} from "./Processor";
+import { fixMessageRoles } from "./messageRoleFixer";
+import { indentNicely } from "../utils";
+import { createLLMStreamReader } from "../utils/llmStreamReader";
+import { UsageError } from "../utils/llmStreamReader";
 import { encodeChat } from "gpt-tokenizer/model/gpt-4";
 import { ChatMessage } from "gpt-tokenizer/GptEncoding";
-import { OpenAIClientConfig } from "./OpenAIProcessor.ts";
+import { OpenAIClientConfig } from "./OpenAIProcessor";
 
 const tracer = trace.getTracer(
   'open-souls-OpenAICompatibleProcessor',
