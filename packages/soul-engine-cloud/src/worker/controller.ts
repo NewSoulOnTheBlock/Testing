@@ -13,6 +13,8 @@ export class WorkerController {
   private messageHandlers: ((message: IPCEvent) => void)[];
   private aliveStartTimeoutHandle?: ReturnType<typeof setTimeout>;
   private aliveIntervalHandle?: ReturnType<typeof setInterval>;
+  private readonly aliveTimeoutMs: number;
+  private readonly aliveCheckIntervalMs: number;
 
   public workerId?: string;
 
@@ -22,6 +24,8 @@ export class WorkerController {
       this.aliveRejector = reject;
     });
     this.messageHandlers = [];
+    this.aliveTimeoutMs = parseInt(process.env.WORKER_ALIVE_TIMEOUT_MS ?? "30000", 10);
+    this.aliveCheckIntervalMs = parseInt(process.env.WORKER_ALIVE_CHECK_INTERVAL_MS ?? "600", 10);
   }
 
   get isAlive() {
@@ -151,14 +155,21 @@ export class WorkerController {
 
   private startAliveCheck() {
     this.aliveStartTimeoutHandle = setTimeout(() => {
+      if (this.lastAliveTime === 0) {
+        this.lastAliveTime = Date.now();
+      }
       this.aliveStartTimeoutHandle = undefined;
       this.aliveIntervalHandle = setInterval(() => {
-        if (Date.now() - this.lastAliveTime > 6_000) {
+        if (Date.now() - this.lastAliveTime > this.aliveTimeoutMs) {
           this.reportingAlive = false;
-          logger.warn("worker did not send alive message within 6_000ms", { workerId: this.workerId, difference: Date.now() - this.lastAliveTime });
+          logger.warn("worker did not send alive message within timeout", {
+            workerId: this.workerId,
+            difference: Date.now() - this.lastAliveTime,
+            timeoutMs: this.aliveTimeoutMs,
+          });
           this.kill("alive interval exceeded");
         }
-      }, 600);
+      }, this.aliveCheckIntervalMs);
     }, 2000);
   }
 
