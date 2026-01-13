@@ -1,8 +1,8 @@
-import createTag from './createTag.ts';
-import stripIndent from './stripIndent.ts';
-import inlineArrayTransformer from './inlineArrayTransformer.ts';
-import splitStringTransformer from './splitStringTransformer.ts';
-import removeNonPrintingValuesTransformer from './removeNonPrintingValuesTransformer.ts';
+import createTag from "./createTag";
+import stripIndent from "./stripIndent";
+import inlineArrayTransformer from "./inlineArrayTransformer";
+import splitStringTransformer from "./splitStringTransformer";
+import removeNonPrintingValuesTransformer from "./removeNonPrintingValuesTransformer";
 
 /**
  * This code is a subset of https://www.npmjs.com/package/common-tags (their codeBlock / html function)

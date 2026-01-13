@@ -1,4 +1,4 @@
-import { Processor, ProcessorCreationOpts, ProcessorFactory } from './Processor.ts'
+import { Processor, ProcessorCreationOpts, ProcessorFactory } from "./Processor"
 
 const processorRegistry: Record<string, ProcessorFactory > = {}
 

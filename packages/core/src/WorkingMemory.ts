@@ -1,12 +1,12 @@
 import { nanoid } from "nanoid"
 import type { ZodSchema } from "zod"
 import { EventEmitter } from "eventemitter3"
-import { getProcessor } from "./processors/registry.ts"
+import { getProcessor } from "./processors/registry"
 import { zodToJsonSchema } from "zod-to-json-schema"
-import type { UsageNumbers } from "./processors/Processor.ts"
-import type { MemoryTransformationOptions, PostProcessReturn, TransformOptions, TransformReturnNonStreaming, TransformReturnStreaming } from "./cognitiveStep.ts"
-import { indentNicely } from "./utils.ts"
-import { ChatMessageRoleEnum, InputMemory, Memory } from "./Memory.ts"
+import type { UsageNumbers } from "./processors/Processor"
+import type { MemoryTransformationOptions, PostProcessReturn, TransformOptions, TransformReturnNonStreaming, TransformReturnStreaming } from "./cognitiveStep"
+import { indentNicely } from "./utils"
+import { ChatMessageRoleEnum, InputMemory, Memory } from "./Memory"
 
 const DEFAULT_REGION = "default"
 

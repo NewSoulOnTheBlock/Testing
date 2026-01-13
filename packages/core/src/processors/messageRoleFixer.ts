@@ -1,6 +1,6 @@
 import { ChatCompletionCreateParams, ChatCompletionMessageParam } from "openai/resources/index.mjs"
-import { ChatMessageContent, ChatMessageRoleEnum, ContentImage, ContentText, Memory } from "../Memory.ts"
-import { ContentTypeGuards } from "../Memory.ts"
+import { ChatMessageContent, ChatMessageRoleEnum, ContentImage, ContentText, Memory } from "../Memory"
+import { ContentTypeGuards } from "../Memory"
 
 export interface FixMethods {
   singleSystemMessage?: boolean

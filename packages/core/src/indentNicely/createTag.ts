@@ -1,4 +1,4 @@
-import flat from './utils/flat.ts';
+import flat from "./utils/flat";
 
 const tagTransformersSymbol = 'COMMON_TAGS_TAG_TRANSFORMERS_SYMBOL';
 

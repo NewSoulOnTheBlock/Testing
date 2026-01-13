@@ -1,10 +1,10 @@
 export { z } from 'zod';
 
-export * from './cognitiveStep.ts'
-export * from './processors/index.ts'
-export * from './forkStream.ts'
-export * from './utils.ts'
-export * from './WorkingMemory.ts'
-export * from './Memory.ts'
+export * from './cognitiveStep'
+export * from './processors/index'
+export * from './forkStream'
+export * from './utils'
+export * from './WorkingMemory'
+export * from './Memory'
 
-export * from "./sharedTypes/index.ts"
+export * from "./sharedTypes/index"

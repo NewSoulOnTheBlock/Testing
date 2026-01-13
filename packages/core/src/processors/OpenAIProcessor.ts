@@ -4,8 +4,8 @@ import { trace, context } from "@opentelemetry/api";
 import { backOff } from "exponential-backoff";
 import { ZodError, fromZodError } from 'zod-validation-error';
 
-import { registerProcessor } from "./registry.ts";
-import { ChatMessageRoleEnum, Memory } from "../Memory.ts";
+import { registerProcessor } from "./registry";
+import { ChatMessageRoleEnum, Memory } from "../Memory";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 import { encodeChat } from "gpt-tokenizer/model/gpt-4";
 import { ChatMessage } from "gpt-tokenizer/GptEncoding";
@@ -15,11 +15,11 @@ import {
   prepareMemoryForJSON,
   ProcessOpts,
   ProcessResponse
-} from "./Processor.ts";
-import { fixMessageRoles } from "./messageRoleFixer.ts";
-import { indentNicely } from "../utils.ts";
-import { createLLMStreamReader } from '../utils/llmStreamReader.ts';
-import { UsageError } from '../utils/llmStreamReader.ts';
+} from "./Processor";
+import { fixMessageRoles } from "./messageRoleFixer";
+import { indentNicely } from "../utils";
+import { createLLMStreamReader } from "../utils/llmStreamReader";
+import { UsageError } from "../utils/llmStreamReader";
 
 const tracer = trace.getTracer(
   'open-souls-OpenAIProcessor',

@@ -1,5 +1,5 @@
-import type { WorkingMemory } from "./WorkingMemory.ts";
-import importedIndentNicely from "./indentNicely/index.ts"
+import type { WorkingMemory } from "./WorkingMemory";
+import importedIndentNicely from "./indentNicely/index"
 
 export const indentNicely = importedIndentNicely
 

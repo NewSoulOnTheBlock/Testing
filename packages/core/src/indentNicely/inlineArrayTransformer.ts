@@ -1,4 +1,4 @@
-import { prefixLines, stripLastNewLine } from './utils/index.ts';
+import { prefixLines, stripLastNewLine } from "./utils/index";
 
 /**
  * Converts an array substitution to a string containing a list
