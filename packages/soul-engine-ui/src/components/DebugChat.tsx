@@ -199,6 +199,21 @@ const DebugChat: React.FC<{
 
   const workingPerception = chatSettings.sendAsUser ? chatSettings.userPerception : chatSettings.soulPerception;
   const [loadedSoulPerception, setLoadedSoulPerception] = useState<CustomPerception>(defaultSoulPerception);
+  const textBoxRef = useRef<HTMLDivElement>(null);
+  const memBoxRef = useRef<HTMLDivElement>(null);
+  const [tab, setTab] = useState('tab1');
+  const [isChatScrolled, setIsChatScrolled] = useState(false);
+  const [isMemScrolled, setIsMemScrolled] = useState(false);
+
+  const scrollToBottom = useCallback((ref: React.RefObject<HTMLElement>, behavior: ScrollBehavior = 'smooth') => {
+    if (ref.current) {
+      ref.current.scrollTo({
+        top: ref.current.scrollHeight,
+        behavior: behavior
+      });
+    }
+  }, []);
+
   const sendUserMessage = useCallback(() => {
     scrollToBottom(textBoxRef);
     const perception = chatSettings.perceptionEditor ? chatSettings.userPerception : defaultUserPerception;
@@ -211,7 +226,7 @@ const DebugChat: React.FC<{
 
     provider.sendStateless(request);
     setUserMessage("");
-  }, [provider, messageInput, chatSettings.perceptionEditor, chatSettings.userPerception]);
+  }, [provider, messageInput, chatSettings.perceptionEditor, chatSettings.userPerception, scrollToBottom]);
 
   function createMemory(perception: CustomPerception, messageInput: string) {
 
@@ -255,7 +270,7 @@ const DebugChat: React.FC<{
 
     setUserMessage("");
 
-  }, [messageInput, state?.attributes, state?.memories, events, metadata, chatSettings, loadedSoulPerception]);
+  }, [messageInput, state?.attributes, state?.memories, events, chatSettings, loadedSoulPerception, scrollToBottom]);
 
   const send = useCallback(() => {
     if (chatSettings.sendAsUser) {
@@ -274,12 +289,6 @@ const DebugChat: React.FC<{
     setLoadedSoulPerception({ ...defaultSoulPerception, name });
   }, [state?.attributes, metadata?.environment, setChatSettings]);
 
-  const [tab, setTab] = useState('tab1');
-  const [isChatScrolled, setIsChatScrolled] = useState(false);
-  const [isMemScrolled, setIsMemScrolled] = useState(false);
-  const textBoxRef = useRef<HTMLDivElement>(null);
-  const memBoxRef = useRef<HTMLDivElement>(null);
-
   const handleScroll = (ref: RefObject<HTMLDivElement>, setScrolledUp?: (b: boolean) => void, setScrollAmount?: (n: number) => void) => {
     if (ref.current) {
       const pageHeight = ref.current.clientHeight;
@@ -292,27 +301,18 @@ const DebugChat: React.FC<{
   };
 
   useEffect(() => {
-    if (!textBoxRef.current) { return; }
-
+    const textBoxElement = textBoxRef.current;
+    if (!textBoxElement) { return; }
     const textBoxScrollHandler = () => handleScroll(textBoxRef, setIsChatScrolled);
     const resizeHandler = () => handleScroll(textBoxRef, setIsChatScrolled);
 
-    textBoxRef.current.addEventListener('scroll', textBoxScrollHandler);
+    textBoxElement.addEventListener('scroll', textBoxScrollHandler);
     window.addEventListener('resize', resizeHandler);
     return () => {
-      textBoxRef.current?.removeEventListener('scroll', textBoxScrollHandler);
+      textBoxElement.removeEventListener('scroll', textBoxScrollHandler);
       window.removeEventListener('resize', resizeHandler);
     };
   }, []);
-
-  const scrollToBottom = (ref: React.RefObject<HTMLElement>, behavior: ScrollBehavior = 'smooth') => {
-    if (ref.current) {
-      ref.current.scrollTo({
-        top: ref.current.scrollHeight,
-        behavior: behavior
-      });
-    }
-  };
 
   const lengthOfLastMsg = (events?.slice(-1) || [])[0]?.content?.length;
   useEffect(() => {
@@ -322,13 +322,13 @@ const DebugChat: React.FC<{
       scrollToBottom(textBoxRef);
     }
     wait();
-  }, [events?.length, lengthOfLastMsg]);
+  }, [events?.length, isChatScrolled, lengthOfLastMsg, scrollToBottom]);
 
   const lengthOfLastMem = (state?.memories?.slice(-1) || [])[0]?.content?.length;
   useEffect(() => {
     if (isMemScrolled) { return; }
     scrollToBottom(memBoxRef);
-  }, [state?.memories?.length, lengthOfLastMem]);
+  }, [isMemScrolled, lengthOfLastMem, scrollToBottom, state?.memories?.length]);
 
   useEffect(() => {
     setSelectedCommitIndex((state.commits?.length || 0) - 1)

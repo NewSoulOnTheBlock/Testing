@@ -22,8 +22,15 @@ const privateKeyFromString = (privateKey: string) => {
   return importJWK(JSON.parse(Buffer.from(privateKey, 'base64').toString()), ALGORITHM)
 }
 
-const privateKeyFromObject = (privateKey: KeyLike | JWK) => {
-  return importJWK(privateKey, ALGORITHM)
+const isJwk = (privateKey: KeyLike | JWK): privateKey is JWK => {
+  return typeof privateKey === "object" && privateKey !== null && "kty" in privateKey
+}
+
+const privateKeyFromObject = async (privateKey: KeyLike | JWK) => {
+  if (isJwk(privateKey)) {
+    return importJWK(privateKey, ALGORITHM)
+  }
+  return privateKey
 }
 
 export const issueTokenForEngine = async ({ privateKey, issuer, organization, blueprint, soulId, additionalPayload = {} }: EngineJWTOptions) => {
@@ -40,7 +47,9 @@ export const issueTokenForEngine = async ({ privateKey, issuer, organization, bl
 }
 
 export const issueToken = async ({ privateKey, issuer, payload: userPayload }: JWTOptions) => {
-  const privateKeyJWK = typeof privateKey === 'string' ? (await privateKeyFromString(privateKey)) : (await privateKeyFromObject(privateKey))
+  const privateKeyJWK = typeof privateKey === 'string'
+    ? await privateKeyFromString(privateKey)
+    : await privateKeyFromObject(privateKey)
   // Issue token
 
   const payload: JWTPayload = {

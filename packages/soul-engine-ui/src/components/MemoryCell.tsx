@@ -184,7 +184,7 @@ function useTextHiding(text: string, containerRef: React.RefObject<HTMLDivElemen
             const { scrollHeight, clientHeight } = containerRef.current;
             setTooLargeForContainer(scrollHeight > clientHeight);
         }
-    }, [text]);
+    }, [containerRef, text]);
 
     return {
         isLong,
